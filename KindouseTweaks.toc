@@ -1,0 +1,18 @@
+## Interface: 16001
+## Title: |cff33bbffKindouse|r Tweaks
+## Notes: Kindouse's collection of UI changes, sound tweaks and convenience settings. /ktw
+## Author: Kindouse
+## Version: 3.3
+## X-License: GPL-3.0-or-later
+## IconTexture: Interface\Icons\INV_Misc_Gear_01
+## SavedVariables: KindouseTweaksDB
+## AddonCompartmentFunc: KindouseTweaks_OnAddonCompartmentClick
+
+Core.lua
+UnitFrames.lua
+ActionBars.lua
+World.lua
+Sparkles.lua
+Vendor.lua
+Sound.lua
+Options.lua
