@@ -68,7 +68,7 @@ ns.Register({
 	key = "currentValueText",
 	category = "Unit Frames",
 	label = "Custom text on health and power bars",
-	tooltip = "Health and power bars on the player and target frames show what you pick below. The choice changes straight away.",
+	tooltip = "Health and power bars on the player and target frames show what you pick below, always, whatever the game's own Status Text option is set to. The choice changes straight away.",
 	default = false,
 	reload = true,
 	build = BuildModePicker,
@@ -408,8 +408,9 @@ local function ShowText(bar)
 	local info, centre = textBars[bar], bar.TextString
 	if not (info and centre) then return end
 	local left, right = bar.LeftText, bar.RightText
-	-- only when the game is showing text on this bar at all (always, or on mouseover)
-	if not (centre:IsShown() or (left and left:IsShown()) or (right and right:IsShown())) then return end
+	-- Shown whatever the game's own Status Text option says. With that set to
+	-- None the game hides the text except on mouseover; this runs right after
+	-- each of its updates and after it hides the text, so ours comes back.
 
 	local mode = ns.db.healthTextMode or "remaining"
 	local cur, max = Values(info)
@@ -490,6 +491,10 @@ local function HookText(bar, unit, health)
 		hooksecurefunc(bar, "UpdateTextStringWithValues", ShowText)
 	elseif bar.UpdateTextString then
 		hooksecurefunc(bar, "UpdateTextString", ShowText)
+	end
+	-- the game hides the text again when the mouse leaves the bar
+	if bar.HideStatusBarText then
+		hooksecurefunc(bar, "HideStatusBarText", ShowText)
 	end
 end
 
