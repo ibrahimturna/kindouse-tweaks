@@ -17,7 +17,15 @@ local frame, body, panel
 
 local function Refresh()
 	if not body then return end
-	for _, cb in ipairs(body.checks) do cb:SetChecked(ns.Get(cb.key)) end
+	for _, cb in ipairs(body.checks) do
+		cb:SetChecked(ns.Get(cb.key))
+		if cb.parent then
+			-- a sub-option only does something while its parent is on
+			local on = ns.Get(cb.parent) and true or false
+			cb:SetEnabled(on)
+			if on then cb.label:SetTextColor(1, 1, 1) else cb.label:SetTextColor(0.5, 0.5, 0.5) end
+		end
+	end
 	for _, def in ipairs(ns.settings) do
 		if def.refresh then def.refresh() end
 	end
@@ -38,12 +46,29 @@ local function BuildBody()
 	content:SetSize(WIDTH - 30, 1)
 	scroll:SetScrollChild(content)
 
+	-- settings flagged new = true that haven't been seen yet go first, under
+	-- "New", with a NEW badge. They count as seen once shown, and from the next
+	-- login or /reload they sit in their own section like the rest.
+	ns.db.seen = ns.db.seen or {}
+	local fresh, rest = {}, {}
+	for _, def in ipairs(ns.settings) do
+		if def.new and not ns.db.seen[def.key] then
+			fresh[#fresh + 1] = { def = def, section = "New", isNew = true }
+			ns.db.seen[def.key] = true
+		else
+			rest[#rest + 1] = { def = def, section = def.category }
+		end
+	end
+	for _, entry in ipairs(rest) do fresh[#fresh + 1] = entry end
+
 	body.checks = {}
 	local y = -4
 	local category
-	for _, def in ipairs(ns.settings) do
-		if def.category ~= category then
-			category = def.category
+	local placed = {} -- key -> section it is listed in
+	for _, entry in ipairs(fresh) do
+		local def = entry.def
+		if entry.section ~= category then
+			category = entry.section
 			if #body.checks > 0 then y = y - 8 end
 			local head = content:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			head:SetPoint("TOPLEFT", PAD, y)
@@ -58,11 +83,26 @@ local function BuildBody()
 
 		local cb = CreateFrame("CheckButton", nil, content, "UICheckButtonTemplate")
 		cb:SetSize(24, 24)
-		cb:SetPoint("TOPLEFT", PAD, y)
+		-- indented under its parent when listed right with it
+		local x = PAD + (entry.isNew and 30 or 0)
+		if def.parent and placed[def.parent] == entry.section then x = x + 22 end
+		placed[def.key] = entry.section
+		cb:SetPoint("TOPLEFT", x, y)
 		cb.key = def.key
+		cb.parent = def.parent
+		if entry.isNew then
+			local badge = content:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+			badge:SetPoint("RIGHT", cb, "LEFT", -2, 0)
+			badge:SetText("NEW")
+			badge:SetTextColor(0.45, 0.8, 1)
+			badge:SetShadowColor(0.1, 0.5, 1, 0.9)
+			badge:SetShadowOffset(0, 0)
+		end
 		local label = cb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+		cb.label = label
 		label:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-		label:SetText(def.label .. (def.reload and " |cff808080*|r" or ""))
+		label:SetText(def.label .. (def.reload and " |cff808080*|r" or "")
+			.. (entry.isNew and "  |cff707070(" .. def.category .. ")|r" or ""))
 		cb:SetHitRectInsets(0, -label:GetStringWidth() - 4, 0, 0)
 		cb:SetScript("OnClick", function(self)
 			ns.Set(self.key, self:GetChecked())

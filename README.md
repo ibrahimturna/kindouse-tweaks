@@ -18,9 +18,13 @@ Open the settings with `/ktw`, `/kindouse` or `/kindousetweaks`, or with the min
 - Keeps the game's sparkle on quest loot
 - Sparkles on herbs, ore veins, quest objects, lootable corpses and other interactable objects within about 15 yards
 
-**Vendors**
+**Vendors** (off by default)
 - Auto repair
 - Auto sell junk (hold Shift while opening the merchant to skip both once)
+
+**Items** (off by default)
+- Item level in item tooltips, right below the name
+- Quality-coloured borders on items in your bags, bank, character panel and inspect window, optionally on equipment only
 
 **Sound**
 - Mutes the spell fizzle sound

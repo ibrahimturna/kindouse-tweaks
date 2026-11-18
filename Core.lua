@@ -16,6 +16,10 @@ ns.loaded = {}   -- values at login, to tell when a reload is needed
 --   tooltip  = longer description,
 --   default  = true/false,
 --   reload   = true if the change only takes effect after /reload,
+--   new      = true for a recently added setting: listed on top under "New"
+--              with a NEW badge until the menu has been opened once,
+--   parent   = optional key of another setting: this one is shown indented
+--              under it, and greyed out while that one is off,
 --   apply    = function(enabled, isLogin): called at login and on every change
 --              (not called on change for reload-only settings),
 --   build    = optional function(parent, x, y) adding extra controls under the

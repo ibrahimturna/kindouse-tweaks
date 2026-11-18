@@ -108,14 +108,14 @@ ns.Register({
 	category = "Vendors",
 	label = "Auto repair",
 	tooltip = "Repairs all your gear when you open a merchant that can repair, and says what it cost in chat.",
-	default = true,
+	default = false,
 })
 ns.Register({
 	key = "autoSellJunk",
 	category = "Vendors",
 	label = "Auto sell junk",
 	tooltip = "Sells all grey (poor quality) items in your bags when you open a merchant, and says what you got in chat. Hold Shift while opening the merchant to skip it once.",
-	default = true,
+	default = false,
 })
 
 local f = CreateFrame("Frame")
