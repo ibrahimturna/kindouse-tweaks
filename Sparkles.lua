@@ -8,6 +8,8 @@
 -- interactable objects get a sparkle of their own, the effect is larger (glow
 -- and beam added), the animation and classification are throttled, interaction
 -- icons are always hidden, and corpses sparkle without the in-range check.
+-- Later: the Interact Key is switched back on whenever it is found off while
+-- a sparkle option is on, and /ktw sparkle prints a report for bug reports.
 -- The original description follows.
 --
 -- Sparkles on ore veins, herbs, quest objects and corpses that still hold
@@ -191,9 +193,9 @@ end
 local Evaluate;
 
 -- SoftTargetInteract ("Enable Interact Key") and SoftTargetIconGameObject (part
--- of "Interact Key Icons") are the player's settings too. They are switched on
--- when the sparkles start and whenever a sparkle option is switched on (force);
--- at login a player who switched them off afterwards keeps them off.
+-- of "Interact Key Icons") are the player's settings too. The sparkles need
+-- them, so they are kept on while any sparkle option is on; their old values
+-- come back once every sparkle option is off.
 local function ApplyCVars(force)
 	if InCombatLockdown() then
 		pendingCVars = "apply";
@@ -211,7 +213,15 @@ local function ApplyCVars(force)
 	end
 	if force then
 		paused, db.pausedInteract = nil, nil;
-		SetCVarValue("SoftTargetInteract", 3);      -- interaction soft target always on
+	end
+	-- The sparkles can't work without these two, so while any sparkle option is
+	-- on they are put back whenever they are found off (a game patch or the
+	-- account settings synced from the server can switch them off). Not while
+	-- safe self-cast has paused soft targeting: that pause turns it off itself.
+	if not paused then
+		if GetCVarValue("SoftTargetInteract") == "0" or force then
+			SetCVarValue("SoftTargetInteract", 3);  -- interaction soft target always on
+		end
 		SetCVarValue("SoftTargetIconGameObject", 1); -- world objects get a nameplate
 	end
 	SetCVarValue("SoftTargetInteractRange", RANGE);
@@ -453,6 +463,13 @@ local function Classify(unit, name)
 		category = "quest";
 	end
 	return category, blocked or false;
+end
+
+-- /ktw sparkle: prints what the sparkle code sees on the current interaction
+-- target, for bug reports. Defined here, filled in once Evaluate's helpers exist.
+local Report;
+function ns.SparkleReport()
+	if Report then Report(); end
 end
 
 -- Does the corpse still hold loot this character may take? pcall instead of
@@ -823,6 +840,47 @@ function Evaluate()
 	else
 		sparkle.category = category;
 		ProposeState(state);
+	end
+end
+
+local function Show(value)
+	if IsSecret(value) then
+		return "secret";
+	end
+	return tostring(value);
+end
+
+function Report()
+	local out = {};
+	local function add(text) out[#out + 1] = text; end
+	local enabled = {};
+	for category, key in pairs(CATEGORY_OPTIONS) do
+		if db and db[key] then enabled[#enabled + 1] = category; end
+	end
+	table.sort(enabled);
+	add("on: " .. (#enabled > 0 and table.concat(enabled, ", ") or "nothing") ..
+		" | started: " .. Show(ready) .. " | paused: " .. Show(paused) .. " | combat: " .. Show(InCombatLockdown()));
+	local cvars = {};
+	for _, name in ipairs({ "SoftTargetInteract", "SoftTargetIconGameObject", "SoftTargetNameplateInteract",
+		"SoftTargetInteractRange", "SoftTargetInteractArc", "SoftTargetInteractOnlyInRange" }) do
+		cvars[#cvars + 1] = name:gsub("SoftTarget", "") .. "=" .. Show(C_CVar.GetCVar(name));
+	end
+	add("cvars: " .. table.concat(cvars, " "));
+	add("target: exists=" .. Show(SafeCall(UnitExists, SOFT)) .. " object=" .. Show(SafeCall(UnitIsGameObject, SOFT)) ..
+		" name=" .. Show(SafeCall(UnitName, SOFT)));
+	local unit, plate, unknown = ResolveTarget();
+	local plates = 0;
+	for _ in pairs(activeUnits) do plates = plates + 1; end
+	add("resolved: unit=" .. Show(unit) .. " plate=" .. (plate and "yes" or "no") .. " unknown=" .. Show(unknown) ..
+		" direct=" .. Show(directWorks) .. " plates around=" .. plates);
+	if unit and SafeCall(UnitIsGameObject, unit) == true then
+		local category, blocked = Classify(unit, SafeCall(UnitName, unit));
+		add("category: " .. Show(category or "other") .. " blocked=" .. Show(blocked) ..
+			" state=" .. Show(ReadState(unit, blocked)));
+	end
+	add("sparkle shown: " .. (sparkle.anchor and "yes" or "no"));
+	for _, line in ipairs(out) do
+		ns.Print(line);
 	end
 end
 

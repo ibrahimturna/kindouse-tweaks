@@ -26,6 +26,9 @@ Open the settings with `/ktw`, `/kindouse` or `/kindousetweaks`, or with the min
 - Item level in item tooltips, right below the name
 - Quality-coloured borders on items in your bags, bank, character panel and inspect window, optionally on equipment only
 
+**Minimap** (off by default)
+- Bigger minimap clock, with a size slider
+
 **Sound**
 - Mutes the spell fizzle sound
 - Disables error speech

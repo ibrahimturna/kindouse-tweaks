@@ -306,7 +306,14 @@ ns.Register({
 SLASH_KINDOUSETWEAKS1 = "/ktw"
 SLASH_KINDOUSETWEAKS2 = "/kindouse"
 SLASH_KINDOUSETWEAKS3 = "/kindousetweaks"
-SlashCmdList.KINDOUSETWEAKS = function() ns.ToggleOptions() end
+SlashCmdList.KINDOUSETWEAKS = function(msg)
+	msg = strtrim(msg or ""):lower()
+	if msg == "sparkle" or msg == "sparkles" then
+		if ns.SparkleReport then ns.SparkleReport() end
+	else
+		ns.ToggleOptions()
+	end
+end
 
 function KindouseTweaks_OnAddonCompartmentClick()
 	ns.ToggleOptions()
