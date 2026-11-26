@@ -59,7 +59,19 @@ local function BuildBody()
 			rest[#rest + 1] = { def = def, section = def.category }
 		end
 	end
-	for _, entry in ipairs(rest) do fresh[#fresh + 1] = entry end
+	-- the rest by section, sections in the order they first appear, so one
+	-- section's settings stay together even when they come from different files
+	local order, sections = {}, {}
+	for _, entry in ipairs(rest) do
+		if not sections[entry.section] then
+			sections[entry.section] = {}
+			order[#order + 1] = entry.section
+		end
+		table.insert(sections[entry.section], entry)
+	end
+	for _, section in ipairs(order) do
+		for _, entry in ipairs(sections[section]) do fresh[#fresh + 1] = entry end
+	end
 
 	body.checks = {}
 	local y = -4
@@ -154,7 +166,7 @@ local function BuildWindow()
 	if not body then BuildBody() end
 	frame = CreateFrame("Frame", "KindouseTweaksOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	frame:SetPoint("CENTER")
-	frame:SetFrameStrata("HIGH") -- below the colour picker, which is a dialog
+	frame:SetFrameStrata("HIGH") -- below the color picker, which is a dialog
 	frame:SetClampedToScreen(true)
 	frame:EnableMouse(true)
 	frame:SetMovable(true)

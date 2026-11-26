@@ -1,5 +1,5 @@
 -- Kindouse Tweaks: action bars
--- Colours action button icons when the action is out of range, when you lack the
+-- Colors action button icons when the action is out of range, when you lack the
 -- mana/energy/rage for it, or when it is unusable. The method is tullaRange's
 -- (MIT licence, Copyright (c) 2010 Jason Greer): re-tint the icon after
 -- Blizzard's own usable/range updates, which are event driven on this client.
@@ -141,11 +141,11 @@ end
 local function Enable()
 	if active then return end
 	if C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("tullaRange") then
-		ns.Print("tullaRange is also enabled, so the built-in range colouring is switched off. Disable tullaRange to use this one.")
+		ns.Print("tullaRange is also enabled, so the built-in range coloring is switched off. Disable tullaRange to use this one.")
 		return
 	end
 	if not (ActionBarButtonEventsFrame and ActionBarButtonEventsFrame.ForEachFrame and ActionButton_UpdateRangeIndicator) then
-		ns.Print("range colouring isn't supported on this game version.")
+		ns.Print("range coloring isn't supported on this game version.")
 		return
 	end
 	active = true
@@ -163,7 +163,7 @@ local function Enable()
 end
 
 ----------------------------------------------------------------------
--- colour settings, shown under the checkbox in the options window:
+-- color settings, shown under the checkbox in the options window:
 -- one row per state with a live preview, quick presets and a full picker
 ----------------------------------------------------------------------
 local ROWS = {
@@ -249,7 +249,7 @@ local function BuildColors(parent, x, y)
 		row.tex:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 		preview:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
 		preview:SetScript("OnClick", function() OpenPicker(info.state) end)
-		Tip(preview, info.label, "This is how the button will look. Click to pick any colour and opacity.")
+		Tip(preview, info.label, "This is how the button will look. Click to pick any color and opacity.")
 
 		local label = parent:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 		label:SetPoint("LEFT", preview, "RIGHT", 8, 0)
@@ -285,7 +285,7 @@ local function BuildColors(parent, x, y)
 			colors[info.state].desaturate = self:GetChecked() and true or false
 			Changed()
 		end)
-		Tip(row.desat, "Grey out the icon", "Removes the icon's own colours before tinting it, so the tint reads clearly on any icon.")
+		Tip(row.desat, "Grey out the icon", "Removes the icon's own colors before tinting it, so the tint reads clearly on any icon.")
 
 		rows[#rows + 1] = row
 		y = y - 31
@@ -294,7 +294,7 @@ local function BuildColors(parent, x, y)
 	local reset = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	reset:SetSize(110, 20)
 	reset:SetPoint("TOPLEFT", x, y - 1)
-	reset:SetText("Reset colours")
+	reset:SetText("Reset colors")
 	reset:SetScript("OnClick", function()
 		for state, d in pairs(DEFAULTS) do
 			local c = colors[state]
@@ -308,8 +308,8 @@ end
 ns.Register({
 	key = "buttonRange",
 	category = "Action Bars",
-	label = "Colour buttons by range, mana and usability",
-	tooltip = "Tints action button icons when the action is out of range, when you don't have the mana, energy or rage for it, or when it can't be used. Colour changes below apply straight away.",
+	label = "Color buttons by range, mana and usability",
+	tooltip = "Tints action button icons when the action is out of range, when you don't have the mana, energy or rage for it, or when it can't be used. Color changes below apply straight away.",
 	default = true,
 	reload = true,
 	apply = function(enabled)

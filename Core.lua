@@ -37,8 +37,8 @@ function ns.OnLoad(fn)
 	onLoad[#onLoad + 1] = fn
 end
 
--- opens the game's colour picker (no opacity); callback(r, g, b) on every change,
--- and with the starting colour again if the picker is cancelled
+-- opens the game's color picker (no opacity); callback(r, g, b) on every change,
+-- and with the starting color again if the picker is cancelled
 function ns.PickColor(r, g, b, callback)
 	local function pick() callback(ColorPickerFrame:GetColorRGB()) end
 	local function cancel() callback(r, g, b) end

@@ -56,3 +56,105 @@ ns.Register({
 		end
 	end,
 })
+
+----------------------------------------------------------------------
+-- names hidden with the UI (Alt+Z): Alt+Z hides only the interface, the
+-- names over characters are drawn by the game world and stay. While the UI
+-- is hidden, the game's name options are switched off; they go back to what
+-- they were when the UI comes back. The old values are kept in the saved
+-- variables, so a logout or crash with the UI hidden can't leave names off.
+----------------------------------------------------------------------
+local OWN = { "UnitNameOwn" }
+local OTHERS = {
+	"UnitNameFriendlyPlayerName", "UnitNameEnemyPlayerName",
+	"UnitNameFriendlyPetName", "UnitNameEnemyPetName",
+	"UnitNameFriendlyGuardianName", "UnitNameEnemyGuardianName",
+	"UnitNameFriendlyTotemName", "UnitNameEnemyTotemName",
+	"UnitNameNPC", "UnitNameNonCombatCreatureName",
+}
+
+local function GetValue(name)
+	local ok, value = pcall(C_CVar.GetCVar, name)
+	if ok then return value end
+end
+
+-- only writes when the value changes (every write runs the game's handlers)
+local function SetValue(name, value)
+	local current = GetValue(name)
+	if current == nil or current == value then return end
+	pcall(C_CVar.SetCVar, name, value)
+end
+
+local waitingForCombat = false
+
+local function RestoreNames()
+	local saved = ns.db and ns.db.hiddenNames
+	if not saved then return end
+	if InCombatLockdown() then waitingForCombat = true return end
+	for name, value in pairs(saved) do SetValue(name, value) end
+	ns.db.hiddenNames = nil
+end
+
+local function HideNames()
+	if not (ns.Get("hideNamesWithUI") or ns.Get("hideOtherNamesWithUI")) then return end
+	if InCombatLockdown() then waitingForCombat = true return end
+	ns.db.hiddenNames = ns.db.hiddenNames or {}
+	local saved = ns.db.hiddenNames
+	local function hide(list)
+		for _, name in ipairs(list) do
+			local value = GetValue(name)
+			if value ~= nil then
+				if saved[name] == nil then saved[name] = value end
+				SetValue(name, "0")
+			end
+		end
+	end
+	if ns.Get("hideNamesWithUI") then hide(OWN) end
+	if ns.Get("hideOtherNamesWithUI") then hide(OTHERS) end
+end
+
+-- a setting switched on or off while the interface is hidden takes effect at once
+local function ApplyNames(_, isLogin)
+	if isLogin then
+		RestoreNames() -- left from a logout with the interface hidden
+		return
+	end
+	RestoreNames()
+	if not UIParent:IsShown() then HideNames() end
+end
+
+local function Update()
+	if UIParent:IsShown() then RestoreNames() else HideNames() end
+end
+
+UIParent:HookScript("OnHide", Update)
+UIParent:HookScript("OnShow", Update)
+
+local names = CreateFrame("Frame")
+names:RegisterEvent("PLAYER_REGEN_ENABLED")
+names:SetScript("OnEvent", function()
+	if waitingForCombat then
+		waitingForCombat = false
+		Update()
+	end
+end)
+
+ns.Register({
+	key = "hideNamesWithUI",
+	category = "Hide UI (Alt+Z)",
+	new = true,
+	label = "Hide my name too",
+	tooltip = "When you hide the interface with Alt+Z, the name over your character is hidden as well, and it comes back with the interface. In combat this waits until the fight is over.",
+	default = false,
+	apply = ApplyNames,
+})
+
+ns.Register({
+	key = "hideOtherNamesWithUI",
+	category = "Hide UI (Alt+Z)",
+	new = true,
+	label = "Hide other names too",
+	tooltip = "When you hide the interface with Alt+Z, the names of other players, pets and NPCs are hidden as well, and they come back with the interface. In combat this waits until the fight is over.",
+	default = false,
+	apply = ApplyNames,
+})

@@ -4,7 +4,7 @@
 -- (by Sven, itself taken over from Forever Loot Sparkles 1.3.1), licensed
 -- GPL-3.0-or-later, and stays under that licence (see LICENSE).
 -- Modified by Kindouse, November 2026: settings come from Kindouse Tweaks' saved
--- variables and options window, the colour table is db.sparkleColors, unknown
+-- variables and options window, the color table is db.sparkleColors, unknown
 -- interactable objects get a sparkle of their own, the effect is larger (glow
 -- and beam added), the animation and classification are throttled, interaction
 -- icons are always hidden, and corpses sparkle without the in-range check.
@@ -1072,11 +1072,11 @@ local function RefreshSwatches()
 	end
 end
 
--- one row under the checkboxes: a colour swatch per category
+-- one row under the checkboxes: a color swatch per category
 local function BuildColors(parent, x, y)
 	local title = parent:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
 	title:SetPoint("TOPLEFT", x, y - 5);
-	title:SetText("Colours:");
+	title:SetText("Colors:");
 	local offset = x + 54;
 	for i, row in ipairs(COLOR_ROWS) do
 		if i == 4 then -- second line

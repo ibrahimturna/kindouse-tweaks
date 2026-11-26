@@ -7,16 +7,19 @@ Open the settings with `/ktw`, `/kindouse` or `/kindousetweaks`, or with the min
 ## Features
 
 **Unit frames** (off by default)
-- Thick, class-coloured health bars on the player and target frames
+- Thick, class-colored health bars on the player and target frames
 - Custom text on health and power bars: None, Remaining, Numeric Value, Percentage or Both
 - Expressway font on bar numbers
 
 **Action bars**
-- Colours action buttons that are out of range, out of mana or unusable, with a colour picker
+- Colors action buttons that are out of range, out of mana or unusable, with a color picker
 
 **World**
 - Keeps the game's sparkle on quest loot
 - Sparkles on herbs, ore veins, quest objects, lootable corpses and other interactable objects within about 15 yards
+
+**Hide UI (Alt+Z)** (off by default)
+- Hides your name, other names, or both when you hide the interface
 
 **Vendors** (off by default)
 - Auto repair
@@ -24,7 +27,7 @@ Open the settings with `/ktw`, `/kindouse` or `/kindousetweaks`, or with the min
 
 **Items** (off by default)
 - Item level in item tooltips, right below the name
-- Quality-coloured borders on items in your bags, bank, character panel and inspect window, optionally on equipment only
+- Quality-colored borders on items in your bags, bank, character panel and inspect window, optionally on equipment only
 
 **Minimap** (off by default)
 - Bigger minimap clock, with a size slider
@@ -40,7 +43,7 @@ Copy the folder into `Interface\AddOns` and name it `KindouseTweaks`.
 ## Credits
 
 - Sparkles: `Sparkles.lua` and `media/flare.tga` come from [Forever Loot Sparkles - Herbs & Ores](https://www.curseforge.com/wow/addons/forever-loot-sparkles-herbs-ores) 2.1.0 by Sven, which builds on [Forever Loot Sparkles](https://github.com/svengabr/ForeverLootSparkles) by conoar. GPL-3.0-or-later. The changes made are listed at the top of `Sparkles.lua`.
-- Action button colouring uses the method of [tullaRange](https://github.com/tullamods/tullaRange), Copyright (c) 2010 Jason Greer, MIT licence (notice below).
+- Action button coloring uses the method of [tullaRange](https://github.com/tullamods/tullaRange), Copyright (c) 2010 Jason Greer, MIT licence (notice below).
 - `media/Expressway.ttf` is the Expressway font, (c) 2005 Typodermic (Ray Larabie). It is not covered by the GPL licence of the code.
 - The frame art in `media` is an edit of Blizzard's player frame texture. World of Warcraft and its art are the property of Blizzard Entertainment.
 

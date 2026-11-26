@@ -1,5 +1,5 @@
 -- Kindouse Tweaks: unit frames (formerly the Thick Player Health addon)
--- Merges the name box and health bar into one thick, class-coloured health bar on
+-- Merges the name box and health bar into one thick, class-colored health bar on
 -- the player and target frames, and moves the names above the frames.
 -- These changes hook Blizzard's frames, so switching them needs a UI reload.
 
@@ -8,8 +8,8 @@ local ADDON, ns = ...
 ns.Register({
 	key = "thickFrames",
 	category = "Unit Frames",
-	label = "Thick class-coloured health bars",
-	tooltip = "Merges the name box and health bar of the player and target frames into one thick, class-coloured health bar and moves the names above the frames.",
+	label = "Thick class-colored health bars",
+	tooltip = "Merges the name box and health bar of the player and target frames into one thick, class-colored health bar and moves the names above the frames.",
 	default = false,
 	reload = true,
 })
@@ -95,7 +95,7 @@ local POW_TOP, POW_BOTTOM = 48, 57
 local NAME_RAISE = 20
 
 ----------------------------------------------------------------------
--- colours: class colour for players, reaction colour for NPCs
+-- colors: class color for players, reaction color for NPCs
 ----------------------------------------------------------------------
 local function UnitColor(unit)
 	if not UnitExists(unit) then return 0.1, 0.8, 0.1 end
@@ -192,7 +192,7 @@ local function SetCombatArt(u, p)
 end
 
 ----------------------------------------------------------------------
--- bar fill and colour
+-- bar fill and color
 ----------------------------------------------------------------------
 local function SetFill(u, p)
 	local bar = p.bar
@@ -265,7 +265,7 @@ local function Texts(u, p)
 			name.tphBusy = false
 		end
 	end
-	-- the target's coloured name background would sit on top of the bar
+	-- the target's colored name background would sit on top of the bar
 	if p.nameBg then p.nameBg:SetAlpha(0) end
 end
 
@@ -345,7 +345,7 @@ local function Hook(u)
 	local p = u.parts()
 	if not p then return end
 	u.hooked = true
-	-- whenever Blizzard puts its own art, fill, colour or positions back, redo ours
+	-- whenever Blizzard puts its own art, fill, color or positions back, redo ours
 	hooksecurefunc(p.art, "SetAtlas", function() SetArt(u, p) end)
 	if p.flash then hooksecurefunc(p.flash, "SetAtlas", function() SetCombatArt(u, p) end) end
 	if not u.useMirror then
@@ -450,7 +450,7 @@ end
 -- Blizzard's own update is not called from here: run from addon code it hides the
 -- left/right texts and then fails on the secret values, leaving the bar blank.
 -- The power bars themselves are left exactly as the game makes them (size,
--- texture, colours), like BetterBlizzFrames does. Only their texts are placed:
+-- texture, colors), like BetterBlizzFrames does. Only their texts are placed:
 -- with the thick art they are pinned to the power slot drawn in that art, a few
 -- pixels in from each end, on both frames (the target's art is mirrored).
 -- Without the thick art the game's own text positions are kept.

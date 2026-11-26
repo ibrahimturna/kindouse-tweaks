@@ -1,6 +1,6 @@
 -- Kindouse Tweaks: items
 -- * Item level in the item tooltip, right below the name (like Wowhead).
--- * Quality-coloured borders on items in the bags, bank, character panel and
+-- * Quality-colored borders on items in the bags, bank, character panel and
 --   inspect window: green items get a green border, blue a blue one and so on.
 --   Same technique as Tae's Item Quality Glow / GearBorderColor: the action
 --   button border texture, tinted by quality and drawn additively.
@@ -114,7 +114,7 @@ local function BagLink(bag, slot)
 	if GetContainerItemLink then return GetContainerItemLink(bag, slot) end
 end
 
--- weapons and armour (anything you can wear)
+-- weapons and armor (anything you can wear)
 local function IsEquipment(link)
 	if not (link and GetInstant) then return false end
 	local _, _, _, equipLoc, _, classID = GetInstant(link)
@@ -273,8 +273,8 @@ ns.Register({
 	key = "qualityBorders",
 	category = "Items",
 	new = true,
-	label = "Quality-coloured borders on items",
-	tooltip = "Puts a border in the item's quality colour around items in your bags, bank, character panel and the inspect window: green for uncommon, blue for rare, purple for epic and so on.",
+	label = "Quality-colored borders on items",
+	tooltip = "Puts a border in the item's quality color around items in your bags, bank, character panel and the inspect window: green for uncommon, blue for rare, purple for epic and so on.",
 	default = false,
 	apply = function(enabled, isLogin)
 		if isLogin then return end
@@ -292,7 +292,7 @@ ns.Register({
 	new = true,
 	parent = "qualityBorders",
 	label = "Only on equipment",
-	tooltip = "Borders only go on weapons and armour. Trade goods, consumables, quest items and the like are left without one.",
+	tooltip = "Borders only go on weapons and armor. Trade goods, consumables, quest items and the like are left without one.",
 	default = false,
 	apply = function(_, isLogin)
 		if not isLogin and ns.Get("qualityBorders") then UpdateAll() end
